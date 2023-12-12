@@ -1,4 +1,4 @@
-# Project Name
+# React Redux Auth
 
 Brief project description or tagline.
 
