@@ -44,7 +44,7 @@ const Register: React.FC = () => {
     <section className='landing-section'>
       <ToastContainer position="top-center" autoClose={2000} />
       <div className='landing-div'>
-        <h2 className='landing-heading'>Registration Form</h2>
+        <h2 className='landing-heading'>Sign Up</h2>
         <input className='input-box' type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <input className='input-box' type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
         <input className='input-box' type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />

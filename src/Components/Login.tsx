@@ -29,7 +29,7 @@ const Login: React.FC = () => {
     <section className='landing-section'>
       <ToastContainer position="top-center" autoClose={2000} />
       <div className="landing-div">
-        <h2 className='landing-heading'>Login Form</h2>
+        <h2 className='landing-heading'>Login</h2>
         <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} className='input-box' />
         <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className='input-box' />
         <div className='button-div'>
