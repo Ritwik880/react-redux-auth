@@ -11,49 +11,92 @@
     height: 100vh;
     background: #bdc3c7;
     padding: 100px 0;
+
+    .landing-heading {
+        font-size: 30px;
+        color: #fff;
+        font-weight: 500;
+    }
+
+    .input-box {
+        padding: 15px;
+        border-radius: 4px;
+        width: 400px;
+    }
+
+    .landing-div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 1rem;
+        width: 30%;
+        margin: auto;
+        background: #34495e;
+        padding: 50px 0;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    }
+
+    .signup-button {
+        outline: none;
+        border: none;
+        background: #9b59b6;
+        padding: 10px;
+        width: 150px;
+        cursor: pointer;
+        font-size: 20px;
+        font-weight: 500;
+        color: #fff;
+    }
+
+    .username {
+        color: #fff;
+        font-weight: 500;
+        font-size: 25px;
+    }
 }
 
-.landing-heading {
-    font-size: 30px;
-    color: #fff;
-    font-weight: 500;
-}
 
-.input-box {
-    padding: 15px;
-    border-radius: 4px;
-    width: 400px;
-}
 
-.landing-div {
+// Dashboard.scss
+
+.dashboard {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 1rem;
-    width: 30%;
-    margin: auto;
-    background: #34495e;
-    padding: 50px 0;
-    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-}
+    padding: 100px 0;
+    background: #273c75;
+    height: 100vh;
 
-.signup-button {
-    outline: none;
-    border: none;
-    background: #9b59b6;
-    padding: 10px;
-    width: 150px;
-    cursor: pointer;
-    font-size: 20px;
-    font-weight: 500;
-    color: #fff;
-}
+    .dashboard-heading{
+        color: #fff;
+        padding-bottom: 20px;
+    }
 
-.username {
-    color: #fff;
-    font-weight: 500;
-    font-size: 25px;
+    .dashboard-card{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .course-listing,
+    .courses-in-progress,
+    .achievements {
+        margin-bottom: 20px;
+        padding: 30px;
+        border: 1px solid #8e44ad;
+        border-radius: 5px;
+        height: 130px;
+        background: #8e44ad;
+        color: #fff;
+        
+
+        h2 {
+            margin-bottom: 10px;
+        }
+    }
 }
 
 @media (max-width: 767px) {
@@ -69,7 +112,7 @@
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
-    .landing-div{
+    .landing-div {
         width: 65%;
     }
 }

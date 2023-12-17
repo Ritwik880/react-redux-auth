@@ -1,29 +1,18 @@
-// src/App.tsx
-
 import React from 'react';
 import './App.scss'
-import { Route, Routes, Link } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { Route, Routes } from 'react-router-dom';
 import Register from './Components/Register';
 import Login from './Components/Login';
-import { logoutSuccess } from './actions/authActions';
-import Welcome from './Components/Welcome';
+import Dashboard from './Components/Dashboard';
 
 const App: React.FC = () => {
-  const isAuthenticated = useSelector((state: any) => state.auth.user !== null);
-  const dispatch = useDispatch();
-
-  const handleLogout = () => {
-    // In a real-world scenario, you might want to perform additional actions, such as clearing user data on the server
-    dispatch(logoutSuccess());
-  };
 
   return (
     <div>
       <Routes>
-        <Route path="/" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/welcome" element={<Welcome/>} />
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard/>} />
       </Routes>
     </div>
   );

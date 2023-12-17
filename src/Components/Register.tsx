@@ -37,7 +37,7 @@ const Register: React.FC = () => {
       dispatch(registerSuccess(user));
 
       // Redirect to the login page with credentials
-      navigate('/login', {
+      navigate('/', {
         state: { username, email, password },
       });
     } catch (error) {
