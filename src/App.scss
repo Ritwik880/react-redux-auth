@@ -48,6 +48,17 @@
         font-weight: 500;
         color: #fff;
     }
+    .button-div{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 85%;
+    }
+    .login-text{
+        color: #fff;
+        text-decoration: underline;
+        cursor: pointer;
+    }
 
     .username {
         color: #fff;

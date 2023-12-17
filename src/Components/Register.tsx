@@ -15,11 +15,8 @@ const Register: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  // handle registration
   const handleRegister = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
-    // validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       toast.error('Invalid email format');
@@ -32,11 +29,8 @@ const Register: React.FC = () => {
     }
 
     try {
-      // Call the updated register function that includes email, username and password
       const user = await authService.register(username, email, password);
       dispatch(registerSuccess(user));
-
-      // Redirect to the login page with credentials
       navigate('/', {
         state: { username, email, password },
       });
@@ -54,13 +48,15 @@ const Register: React.FC = () => {
         <input className='input-box' type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <input className='input-box' type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
         <input className='input-box' type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <button type="button" onClick={handleRegister} className='signup-button'>
-          Register
-        </button>
+        <div className='button-div'>
+          <button type="button" onClick={handleRegister} className='signup-button'>
+            Sign Up
+          </button>
+          <a onClick={() => navigate('/')} className='login-text'>Login</a>
+        </div>
       </div>
     </section>
   );
 };
 
-// Export the Register component
 export default Register;
