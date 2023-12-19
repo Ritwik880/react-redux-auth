@@ -27,7 +27,7 @@ export const fetchUserDashboardData = async (): Promise<any> => {
                         para: 'English is a West Germanic language that originated in medieval England and has evolved into a global lingua franca. It is spoken by millions of people.',
                         subSubjects: [
                             { id: '5', name: 'Grammar', desc: 'Grammar is the set of rules governing the structure, composition, and proper use of language, encompassing elements such as syntax, semantics, and phonetics, ensuring effective communication and clarity in written and spoken expression.', progress: '60' },
-                            { id: '6', name: 'Literature', desc: 'Literature comprises written or spoken works, including fiction and non-fiction, that explore, analyze, and express the human experience, emotions, and ideas. It encompasses various forms such as novels, poetry, plays, and essays, serving as a reflection of culture, societal values, and individual perspectives throughout history.', progress: '40' },
+                            { id: '6', name: 'Literature', desc: 'Literature comprises written or spoken works, including fiction and non-fiction, that explore, analyze, and express the human experience, emotions, and ideas. It encompasses various forms such as novels, poetry, plays, and essays.', progress: '40' },
                         ],
                     },
                     {

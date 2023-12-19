@@ -1,4 +1,5 @@
 import React, { useState, ChangeEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface CourseProps {
   courseData: {
@@ -16,16 +17,21 @@ const Course: React.FC<CourseProps> = ({ courseData }) => {
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [filteredSubSubjects, setFilteredSubSubjects] = useState(courseData.subSubjects);
+  const navigate = useNavigate();
 
   const calculateTotalProgress = () => {
-    const totalSubSubjects = filteredSubSubjects.length;
+    const totalSubSubjects = courseData.subSubjects.length;
 
     if (totalSubSubjects === 0) {
       return 0;
     }
 
-    const completedSubSubjects = filteredSubSubjects.filter((subSubject) => (subSubject.progress || 0) === 100).length;
-    return (completedSubSubjects / totalSubSubjects) * 100;
+    const completedSubSubjects = courseData.subSubjects.reduce((sum, subSubject) => {
+      const progress = subSubject.progress || 0;
+      return sum + progress;
+    }, 0);
+
+    return (completedSubSubjects / (totalSubSubjects * 100)) * 100;
   };
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -39,10 +45,20 @@ const Course: React.FC<CourseProps> = ({ courseData }) => {
     setFilteredSubSubjects(filtered);
   };
 
+  const handleGoBack = ()=>{
+    navigate('/dashboard')
+  }
+
   return (
     <section className="dashboard">
       <div className="container">
+        <div className='header'>
         <h3 className='progress'>Your Progress: {calculateTotalProgress()}% completed</h3>
+          <button type="button" onClick={handleGoBack} className='logout'>
+            Go Back
+          </button>
+        </div>
+
         <input
           type="text"
           className='input-box search'
