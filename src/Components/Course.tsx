@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, ChangeEvent } from 'react';
 
 interface CourseProps {
   courseData: {
@@ -14,24 +14,44 @@ const Course: React.FC<CourseProps> = ({ courseData }) => {
     return <div>Course data not available</div>;
   }
 
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [filteredSubSubjects, setFilteredSubSubjects] = useState(courseData.subSubjects);
+
   const calculateTotalProgress = () => {
-    const { subSubjects } = courseData;
-    const totalSubSubjects = subSubjects.length;
+    const totalSubSubjects = filteredSubSubjects.length;
 
     if (totalSubSubjects === 0) {
       return 0;
     }
 
-    const completedSubSubjects = subSubjects.filter((subSubject) => (subSubject.progress || 0) === 100).length;
+    const completedSubSubjects = filteredSubSubjects.filter((subSubject) => (subSubject.progress || 0) === 100).length;
     return (completedSubSubjects / totalSubSubjects) * 100;
+  };
+
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+
+    const filtered = courseData.subSubjects.filter((subSubject) =>
+      subSubject.name.toLowerCase().includes(query)
+    );
+
+    setFilteredSubSubjects(filtered);
   };
 
   return (
     <section className="dashboard">
       <div className="container">
         <h3 className='progress'>Your Progress: {calculateTotalProgress()}% completed</h3>
+        <input
+          type="text"
+          className='input-box search'
+          placeholder='Search'
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
         <div className="dashboard-card">
-          {courseData.subSubjects.map((subSubject: any) => (
+          {filteredSubSubjects.map((subSubject: any) => (
             <div className="card" key={subSubject.id}>
               <footer>
                 <h2>{subSubject.name}</h2>
