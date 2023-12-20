@@ -23,19 +23,17 @@
         border-radius: 4px;
         width: 400px;
     }
-
     .landing-div {
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
         gap: 1rem;
-        width: 30%;
         margin: auto;
         background: #34495e;
-        padding: 50px 0;
         box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
         border-radius: 4px;
+        padding: 20px;
     }
 
     .signup-button {
