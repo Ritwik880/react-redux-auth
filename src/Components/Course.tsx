@@ -32,7 +32,6 @@ const Course: React.FC<CourseProps> = ({ courseData }) => {
       return sum + progress;
     }, 0);
   
-    // Use Math.floor to round down to the nearest integer
     return Math.floor((completedSubSubjects / (totalSubSubjects * 100)) * 100);
   };
 
@@ -62,7 +61,6 @@ const Course: React.FC<CourseProps> = ({ courseData }) => {
   };
 
   const handleSubjectChange = (subjectId: string) => {
-    // Update the progress of the selected subject
     setSubSubjectsProgress((prev) => ({
       ...prev,
       [subjectId]: prev[subjectId] ? prev[subjectId] + 100 : 100,
@@ -71,10 +69,8 @@ const Course: React.FC<CourseProps> = ({ courseData }) => {
 
   const handleGoBack = () => {
     if (allSubSubjectsCompleted) {
-      // Pass the state to the dashboard route
       navigate('/dashboard', { state: { allSubSubjectsCompleted: true } });
     } else {
-      // You can customize this logic or provide feedback if needed
       navigate('/dashboard')
     }
   };

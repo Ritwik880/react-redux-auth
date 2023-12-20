@@ -14,8 +14,7 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     if (!user) {
-      // Redirect to login page if there's no user
-      navigate('/login');
+      navigate('/');
     }
   }, [user, navigate]);
 
@@ -35,17 +34,16 @@ const Dashboard: React.FC = () => {
   }, [user, location.state]);
 
   const handleLogout = () => {
-    // Dispatch the logoutSuccess action and navigate to the login page
     dispatch(logoutSuccess());
     navigate('/');
   };
 
   const handleCardClick = (courseId: string) => {
-    // Use the courseId to construct the sub-subjects route or update the selected course
     navigate(`/courses/${courseId}`);
   };
 
   const getCourseStatusText = (courseId: string) => {
+    console.log(courseId);
     return isCourseCompleted(courseId) ? 'Completed' : 'In Progress';
   };
 
