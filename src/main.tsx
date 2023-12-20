@@ -1,8 +1,7 @@
 import { applyMiddleware, createStore, Middleware } from 'redux';
-import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { ThunkDispatch } from 'redux-thunk';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
-import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import rootReducer from './reducers';
 import App from './App';

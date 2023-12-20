@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
       {dashboardData ? (
         <>
           <div className='header'>
-            <h2>Welcome to your Dashboard, {user.username}!</h2>
+            <h2>Welcome to your Dashboard, {user?.username}!</h2>
             <button type="button" onClick={handleLogout} className='logout'>
               Logout
             </button>

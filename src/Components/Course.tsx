@@ -58,7 +58,7 @@ const Course: React.FC<CourseProps> = ({ courseData }) => {
       updatedProgress[subSubject.id] = subSubjectsProgress[subSubject.id] || 0;
     });
   
-    setSubSubjectsProgress((prev) => {
+    setSubSubjectsProgress(() => {
       return updatedProgress;
     });
   };
