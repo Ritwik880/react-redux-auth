@@ -1,13 +1,12 @@
-// src/components/CoursePage.tsx
-
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Course from './Course';
-import { fetchUserDashboardData } from '../api';
+import { fetchUserDashboardData } from '../api/api';
 
 const Courses: React.FC = () => {
   const { courseId } = useParams();
   const [courseData, setCourseData] = useState<any | null>(null);
+
 
   useEffect(() => {
     const fetchCourseData = async () => {
@@ -23,10 +22,12 @@ const Courses: React.FC = () => {
     fetchCourseData();
   }, [courseId]);
 
+
+
   return (
     <div>
       {courseData ? (
-        <Course courseData={courseData} />
+        <Course courseData={courseData}/>
       ) : (
         <div className='loading'>Loading course data...</div>
       )}
