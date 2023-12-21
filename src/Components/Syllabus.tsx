@@ -49,12 +49,10 @@ const Syllabus: React.FC<CourseProps> = ({ courseData }) => {
   }, [courseData.subSubjects, subSubjectsProgress]);
 
   useEffect(() => {
-    // Save progress to localStorage whenever it changes
     localStorage.setItem('subSubjectsProgress', JSON.stringify(subSubjectsProgress));
   }, [subSubjectsProgress]);
 
   useEffect(() => {
-    // Update filtered subjects whenever searchQuery or courseData.subSubjects changes
     const filtered = courseData.subSubjects.filter((subSubject) =>
       subSubject.name.toLowerCase().includes(searchQuery)
     );
