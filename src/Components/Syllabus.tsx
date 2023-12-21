@@ -17,11 +17,17 @@ const Syllabus: React.FC<CourseProps> = ({ courseData }) => {
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [subSubjectsProgress, setSubSubjectsProgress] = useState<{ [key: string]: number }>(() => {
-    const storedProgress = localStorage.getItem('subSubjectsProgress');
-    return storedProgress ? JSON.parse(storedProgress) : {};
+    // Initialize progress to 0 for each subSubject
+    const initialProgress = {};
+    courseData.subSubjects.forEach(subSubject => {
+      initialProgress[subSubject.id] = 0;
+    });
+    return initialProgress;
   });
   const [allSubSubjectsCompleted, setAllSubSubjectsCompleted] = useState<boolean>(false);
+
   const [filteredSubjects, setFilteredSubjects] = useState<Array<{ id: string; name: string; desc: string; progress?: number }>>(courseData.subSubjects);
+
   const navigate = useNavigate();
 
   const calculateTotalProgress = () => {
@@ -50,7 +56,14 @@ const Syllabus: React.FC<CourseProps> = ({ courseData }) => {
 
   useEffect(() => {
     localStorage.setItem('subSubjectsProgress', JSON.stringify(subSubjectsProgress));
-  }, [subSubjectsProgress]);
+    if (allSubSubjectsCompleted) {
+      const delay = 1000;
+      const alertTimeout = setTimeout(() => {
+        alert('Congratulations! You have completed all subjects.');
+      }, delay);
+      return () => clearTimeout(alertTimeout);
+    }
+  }, [subSubjectsProgress, allSubSubjectsCompleted]);
 
   useEffect(() => {
     const filtered = courseData.subSubjects.filter((subSubject) =>
@@ -65,10 +78,18 @@ const Syllabus: React.FC<CourseProps> = ({ courseData }) => {
   };
 
   const handleSubjectChange = (subjectId: string) => {
-    setSubSubjectsProgress((prev) => ({
-      ...prev,
-      [subjectId]: Math.min((prev[subjectId] || 0) + 100, 100),
-    }));
+    setSubSubjectsProgress((prev) => {
+      const newProgress = Math.min((prev[subjectId] || 0) + 100, 100);
+      const updatedProgress = { ...prev, [subjectId]: newProgress };
+
+      const isAllCompleted = courseData.subSubjects.every(
+        (subSubject) => updatedProgress[subSubject.id] === 100
+      );
+
+      setAllSubSubjectsCompleted(isAllCompleted);
+
+      return updatedProgress;
+    });
   };
 
   const handleGoBack = () => {

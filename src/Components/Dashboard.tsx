@@ -34,17 +34,14 @@ const Dashboard: React.FC = () => {
       resetSessionTimeout();
     };
 
-    // Check for user activity
     const handleUserActivityEvents = ['mousemove', 'keydown', 'scroll'];
     handleUserActivityEvents.forEach((event) => {
       window.addEventListener(event, handleUserActivity);
     });
 
-    // Initial session timeout setup
     resetSessionTimeout();
 
     return () => {
-      // Clean up event listeners on component unmount
       handleUserActivityEvents.forEach((event) => {
         window.removeEventListener(event, handleUserActivity);
       });
@@ -86,17 +83,6 @@ const Dashboard: React.FC = () => {
     navigate(`/courses/${courseId}`);
   };
 
-  const isCourseCompleted = (courseId: string) => {
-    return (
-      dashboardData &&
-      dashboardData.courses &&
-      dashboardData.courses.some(
-        (course) =>
-          course.id === courseId &&
-          course.completedCourses.length === course.subSubjects.length
-      )
-    );
-  };
 
   return (
     <section className="dashboard">
@@ -125,30 +111,11 @@ const Dashboard: React.FC = () => {
                         <footer>
                           <h2>{item.name}</h2>
                           <p>{item.para}</p>
-                          <p>
-                            Status:{' '}
-                            {isCourseCompleted(item.id) ? 'Completed' : 'In Progress'}
-                          </p>
                         </footer>
                       </div>
                     ))}
                 </div>
 
-                {completedSubSubjects.length > 0 && (
-                  <div>
-                    <h2>Completed Sub-Subjects</h2>
-                    <ul>
-                      {completedSubSubjects.map((subSubject: any) => (
-                        <li
-                          key={`${subSubject.courseName}-${subSubject.subSubjectName}`}
-                        >
-                          <strong>{subSubject.courseName}:</strong>{' '}
-                          {subSubject.subSubjectName} - {subSubject.subSubjectDesc}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
               </>
             ) : (
               <h2 className="dashboard-heading">Loading....</h2>
