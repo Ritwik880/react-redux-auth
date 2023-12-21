@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import Course from './Course';
+import Syllabus from './Syllabus';
 import { fetchUserDashboardData } from '../api/api';
 
 const Courses: React.FC = () => {
@@ -27,7 +27,7 @@ const Courses: React.FC = () => {
   return (
     <div>
       {courseData ? (
-        <Course courseData={courseData}/>
+        <Syllabus courseData={courseData}/>
       ) : (
         <div className='loading'>Loading course data...</div>
       )}
