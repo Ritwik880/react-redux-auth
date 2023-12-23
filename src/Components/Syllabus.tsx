@@ -11,6 +11,7 @@ interface SubcourseProps {
 const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId }) => {
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [showCompleted, setShowCompleted] = useState<boolean>(false);
 
   const [filteredSubcourses, setFilteredSubcourses] = useState<Array<{ id: string; name: string; desc: string; completed: boolean }>>(
     subcourses || []
@@ -43,25 +44,39 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId }) => {
     setSearchQuery(query);
   };
 
-  const handleGoBack = (courseId: string) => {
+  const handleGoBack = () => {
     navigate('/dashboard', {
       state: {
         completedSubcourses: subcourses?.filter(subcourse => subcourse.completed) || [],
-        courseId: courseId, // Pass courseId to the state
+        courseId: courseId,
       },
     });
   };
-  
+
   const handleRadioChange = (subcourseId: string) => {
     dispatch(markSubcourseComplete(courseId, subcourseId));
   };
+
+  const handleFilterClick = () => {
+    setShowCompleted(!showCompleted);
+
+    // Apply filter only when the filter button is clicked
+    if (showCompleted) {
+      const completed = subcourses?.filter((subcourse) => subcourse.completed) || [];
+      setFilteredSubcourses(completed);
+    } else {
+      setFilteredSubcourses(subcourses || []);
+    }
+  };
+
+  const allCoursesCompleted = subcourses?.every((subcourse) => subcourse.completed);
 
   return (
     <section className="dashboard">
       <div className="container">
         <div className="header">
           <h3 className="progress">Your Progress: {calculateTotalProgress()}% completed</h3>
-          <button type="button" onClick={() => handleGoBack(courseId)} className="logout">
+          <button type="button" onClick={handleGoBack} className="logout">
             Go Back
           </button>
         </div>
@@ -73,28 +88,73 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId }) => {
           value={searchQuery}
           onChange={handleSearchChange}
         />
-        <div className="dashboard-card">
-          {filteredSubcourses.map((subcourse) => (
-            <div className="card" key={subcourse.id}>
-              <footer>
-                <h2>{subcourse.name}</h2>
-                <p>{subcourse.desc}</p>
-                <div className="bottom-footer">
-                  <label className="label">
-                    <input
-                      type="radio"
-                      className="radio"
-                      onChange={() => handleRadioChange(subcourse.id)}
-                      checked={subcourse.completed}
-                    />
-                    {subcourse.name}
-                  </label>
-                  <p>{subcourse.completed ? '100%' : '0%'} completed</p>
-                </div>
-              </footer>
-            </div>
-          ))}
-        </div>
+        <button type="button" className="filter" onClick={handleFilterClick}>
+          {showCompleted ? 'Incompleted Courses' : 'Completed Courses'}
+        </button>
+
+        {showCompleted && (
+          <div>
+            <h3 className='completed-tag'>Completed Courses</h3>
+            {filteredSubcourses.length === 0 ? (
+              <p>No completed courses available</p>
+            ) : (
+              <div className="dashboard-card">
+                {filteredSubcourses.map((subcourse) => (
+                  <div className="card" key={subcourse.id}>
+                    <footer>
+                      <h2>{subcourse.name}</h2>
+                      <p>{subcourse.desc}</p>
+                      <div className="bottom-footer">
+                        <label className="label">
+                          <input
+                            type="radio"
+                            className="radio"
+                            onChange={() => handleRadioChange(subcourse.id)}
+                            checked={subcourse.completed}
+                          />
+                          {subcourse.name}
+                        </label>
+                        <p>{subcourse.completed ? '100%' : '0%'} completed</p>
+                      </div>
+                    </footer>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {!showCompleted && (
+          <div>
+            <h3 className='completed-tag'>Incompleted Courses</h3>
+            {allCoursesCompleted ? (
+              <p>No incompleted courses available</p>
+            ) : (
+              <div className="dashboard-card">
+                {filteredSubcourses.map((subcourse) => (
+                  <div className="card" key={subcourse.id}>
+                    <footer>
+                      <h2>{subcourse.name}</h2>
+                      <p>{subcourse.desc}</p>
+                      <div className="bottom-footer">
+                        <label className="label">
+                          <input
+                            type="radio"
+                            className="radio"
+                            onChange={() => handleRadioChange(subcourse.id)}
+                            checked={subcourse.completed}
+                          />
+                          {subcourse.name}
+                        </label>
+                        <p>{subcourse.completed ? '100%' : '0%'} completed</p>
+                      </div>
+                    </footer>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );
