@@ -6,6 +6,8 @@ import { registerSuccess } from '../actions/authActions';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { markSubcourseComplete } from '../actions/authActions';
+
 
 const Register: React.FC = () => {
   const dispatch = useDispatch();
@@ -22,14 +24,16 @@ const Register: React.FC = () => {
       toast.error('Invalid email format');
       return;
     }
-
+  
     if (!username || !password || !email) {
       toast.error('Please fill in all fields');
       return;
     }
-
+  
     try {
       const user = await authService.register(username, email, password);
+      user.completedCourses = {};
+      
       dispatch(registerSuccess(user));
       navigate('/', {
         state: { username, email, password },
@@ -38,6 +42,7 @@ const Register: React.FC = () => {
       toast.error('Registration failed');
     }
   };
+  
 
   // Render the component
   return (

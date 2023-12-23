@@ -43,7 +43,7 @@ export const authService = {
 
     if (!existingUser) {
       console.error('User not found');
-      throw new Error('User not found');
+      throw new Error('Invalid credentials'); // More specific error message
     }
 
     console.log('Login successful. User:', existingUser);
@@ -56,10 +56,11 @@ export const authService = {
     // Update user's completedCourses
     user.completedCourses[courseId] = true;
     user.completedCourses[subcourseId] = true;
-
-    // Update users in localStorage
-    localStorage.setItem('users', JSON.stringify(users));
-
+  
+    // Update the specific user in localStorage
+    const updatedUsers = users.map((u) => (u.id === user.id ? user : u));
+    localStorage.setItem('users', JSON.stringify(updatedUsers));
+  
     return Promise.resolve(user);
   },
 
