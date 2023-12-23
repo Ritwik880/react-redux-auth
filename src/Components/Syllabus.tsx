@@ -28,7 +28,6 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId }) => {
 
     const completedSubcourses = subcourses?.reduce((sum, subcourse) => (subcourse.completed ? sum + 1 : sum), 0) || 0;
 
-    // Calculate and return the overall progress
     const overallProgress = Math.floor((completedSubcourses / totalSubcourses) * 100);
 
     return overallProgress;
@@ -59,8 +58,6 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId }) => {
 
   const handleFilterClick = () => {
     setShowCompleted(!showCompleted);
-
-    // Apply filter only when the filter button is clicked
     if (showCompleted) {
       const completed = subcourses?.filter((subcourse) => subcourse.completed) || [];
       setFilteredSubcourses(completed);
@@ -70,6 +67,10 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId }) => {
   };
 
   const allCoursesCompleted = subcourses?.every((subcourse) => subcourse.completed);
+
+  const handleNavigate = ()=>{
+    navigate('/quiz')
+  }
 
   return (
     <section className="dashboard">
@@ -128,7 +129,13 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId }) => {
           <div>
             <h3 className='completed-tag'>Incompleted Courses</h3>
             {allCoursesCompleted ? (
-              <p>No incompleted courses available</p>
+              <div>
+                <p>Congratulations You have completed all the courses!</p>
+                <p>Provide your feedback:</p>
+                <button className='quiz-app' onClick={handleNavigate}>
+                  Take Quiz
+                </button>
+              </div>
             ) : (
               <div className="dashboard-card">
                 {filteredSubcourses.map((subcourse) => (

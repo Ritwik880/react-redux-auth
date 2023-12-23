@@ -33,6 +33,14 @@ const initialState: AuthState = {
         { id: '1', name: 'Algebra', desc: 'Algebra is a branch of mathematics that deals with the study of mathematical symbols and the rules for manipulating those symbols to solve equations and understand.', completed: false },
         { id: '2', name: 'Geometry', desc: 'Geometry is a branch of mathematics that focuses on the properties, relationships, and measurements of shapes, sizes, angles, and dimensions in space.', completed: false },
       ],
+      // questionsData: [
+      //   {
+      //     id: 1,
+      //     question: 'What is the ',
+      //     options: ['Paris', 'Berlin', 'Madrid', 'Rome'],
+      //     correctAnswer: 'Paris',
+      //   },
+      // ],
       completedCourses: ['1'],
     },
     {
