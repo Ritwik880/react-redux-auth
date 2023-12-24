@@ -20,11 +20,10 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showCompleted, setShowCompleted] = useState<boolean>(false);
   const [showQuizzes, setShowQuizzes] = useState<boolean>(false);
-
-
   const [filteredSubcourses, setFilteredSubcourses] = useState<Array<{ id: string; name: string; desc: string; completed: boolean }>>(
     subcourses || []
   );
+  const [allQuizzesCompleted, setAllQuizzesCompleted] = useState<boolean>(false); // Add this line
 
   const navigate = useNavigate();
 
@@ -71,29 +70,37 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
     dispatch(markSubcourseComplete(courseId, subcourseId));
   };
 
-
   const handleCheckboxChange = () => {
     setShowCompleted(!showCompleted);
   };
+
   const handleShowQuizzesClick = () => {
     setShowQuizzes(!showQuizzes);
   };
 
-  // const allCoursesCompleted = subcourses?.every((subcourse) => subcourse.completed);
-  const allQuizzesCompleted = questionsData?.every((quiz) => quiz.completed);
-
-  const handleOptionClick = (quizId: number, selectedOption: string) => {
+  const handleOptionClick = async (quizId: number, selectedOption: string) => {
     const currentQuiz = questionsData.find((quiz) => quiz.id === quizId);
-
+  
     if (currentQuiz) {
       const isCorrectOption = selectedOption === currentQuiz.correctAnswer;
+  
+      // Dispatch the appropriate action based on whether the option is correct
       if (isCorrectOption) {
         dispatch(markQuizComplete(courseId, quizId));
       } else {
         dispatch(unmarkQuizComplete(courseId, quizId));
       }
+  
+      await new Promise(resolve => setTimeout(resolve, 1000));
+  
+      // Update the state to check if all quizzes are completed
+      const updatedQuizzes = questionsData.map((quiz) => (quiz.id === quizId ? { ...quiz, completed: true } : quiz));
+      const allQuizzesCompleted = updatedQuizzes.every((quiz) => quiz.completed);
+  
+      setAllQuizzesCompleted(allQuizzesCompleted);
     }
   };
+  
 
   return (
     <section className="dashboard">
@@ -109,7 +116,7 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
           <div>
             <h3 className="completed-tag">Quizzes</h3>
             {allQuizzesCompleted ? (
-              <p>You have successfully completed your quizes!</p>
+              <p>You have successfully completed your quizzes!</p>
             ) : (
               <div className="dashboard-card">
                 {questionsData?.map((quiz) => (
@@ -120,7 +127,7 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
                         {quiz.options.map((option, index) => (
                           <label className="label" key={index}>
                             <input
-                              type="checkbox" // Change to checkbox to allow selecting multiple options
+                              type="checkbox"
                               onChange={() => handleOptionClick(quiz.id, option)}
                               checked={quiz.completed && option === quiz.correctAnswer}
                             />
@@ -139,7 +146,6 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
                   </div>
                 ))}
               </div>
-
             )}
           </div>
         ) : (
@@ -163,7 +169,6 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
                 Completed Courses
               </label>
             </div>
-
 
             {calculateTotalProgress() === 100 && (
               <button type="button" onClick={handleShowQuizzesClick} className='logout quiz'>
@@ -199,7 +204,6 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
             )}
           </div>
         )}
-
       </div>
     </section>
   );
