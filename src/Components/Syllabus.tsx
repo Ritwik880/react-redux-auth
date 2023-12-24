@@ -80,27 +80,21 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
 
   const handleOptionClick = async (quizId: number, selectedOption: string) => {
     const currentQuiz = questionsData.find((quiz) => quiz.id === quizId);
-  
+
     if (currentQuiz) {
       const isCorrectOption = selectedOption === currentQuiz.correctAnswer;
-  
-      // Dispatch the appropriate action based on whether the option is correct
       if (isCorrectOption) {
         dispatch(markQuizComplete(courseId, quizId));
       } else {
         dispatch(unmarkQuizComplete(courseId, quizId));
       }
-  
       await new Promise(resolve => setTimeout(resolve, 1000));
-  
-      // Update the state to check if all quizzes are completed
       const updatedQuizzes = questionsData.map((quiz) => (quiz.id === quizId ? { ...quiz, completed: true } : quiz));
       const allQuizzesCompleted = updatedQuizzes.every((quiz) => quiz.completed);
-  
       setAllQuizzesCompleted(allQuizzesCompleted);
     }
   };
-  
+
 
   return (
     <section className="dashboard">
