@@ -14,7 +14,6 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState(location.state?.password || '');
   const navigate = useNavigate();
 
-  // Handle login
   const handleLogin = async () => {
     try {
       const user = await authService.login({ username, password });
@@ -41,5 +40,4 @@ const Login: React.FC = () => {
   );
 };
 
-// Export the Login component
 export default Login;

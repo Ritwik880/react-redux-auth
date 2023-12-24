@@ -303,7 +303,7 @@ const authReducer = (state = initialState, action: any): AuthState => {
               ...course,
               subSubjects: updatedSubSubjects,
               completedCourses: allSubcoursesCompleted
-                ? [...course.completedCourses, course.id] // Update with course.id, not action.payload.courseId
+                ? [...course.completedCourses, course.id]
                 : course.completedCourses,
             };
           }

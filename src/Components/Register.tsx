@@ -6,7 +6,6 @@ import { registerSuccess } from '../actions/authActions';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { markSubcourseComplete } from '../actions/authActions';
 
 
 const Register: React.FC = () => {
@@ -42,9 +41,7 @@ const Register: React.FC = () => {
       toast.error('Registration failed');
     }
   };
-  
 
-  // Render the component
   return (
     <section className='landing-section'>
       <ToastContainer position="top-center" autoClose={2000} />

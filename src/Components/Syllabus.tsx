@@ -37,7 +37,6 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
 
     const completedSubcourses = subcourses?.reduce((sum, subcourse) => (subcourse.completed ? sum + 1 : sum), 0) || 0;
 
-    // Calculate and return the overall progress without considering quizzes
     const overallProgress = Math.floor((completedSubcourses / totalSubcourses) * 100);
 
     return overallProgress;
@@ -80,7 +79,7 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
     setShowQuizzes(!showQuizzes);
   };
 
-  const allCoursesCompleted = subcourses?.every((subcourse) => subcourse.completed);
+  // const allCoursesCompleted = subcourses?.every((subcourse) => subcourse.completed);
   const allQuizzesCompleted = questionsData?.every((quiz) => quiz.completed);
 
   const handleOptionClick = (quizId: number, selectedOption: string) => {
@@ -88,8 +87,6 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
 
     if (currentQuiz) {
       const isCorrectOption = selectedOption === currentQuiz.correctAnswer;
-
-      // Dispatch the appropriate action based on whether the option is correct
       if (isCorrectOption) {
         dispatch(markQuizComplete(courseId, quizId));
       } else {
