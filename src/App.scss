@@ -152,6 +152,16 @@
         font-weight: 500;
         color: #fff;
     }
+    .form-check{
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 10px;
+    }
+    .quiz{
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
 
 }
 

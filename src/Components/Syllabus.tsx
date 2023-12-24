@@ -1,17 +1,26 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { markSubcourseComplete } from '../actions/authActions';
+import { markSubcourseComplete, markQuizComplete, unmarkQuizComplete } from '../actions/authActions';
 
 interface SubcourseProps {
   courseId: string;
   subcourses: Array<{ id: string; name: string; desc: string; completed: boolean }>;
+  questionsData: Array<{
+    id: number;
+    question: string;
+    options: string[];
+    correctAnswer: string;
+    completed: boolean;
+  }>;
 }
 
-const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId }) => {
+const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsData }) => {
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showCompleted, setShowCompleted] = useState<boolean>(false);
+  const [showQuizzes, setShowQuizzes] = useState<boolean>(false);
+
 
   const [filteredSubcourses, setFilteredSubcourses] = useState<Array<{ id: string; name: string; desc: string; completed: boolean }>>(
     subcourses || []
@@ -28,15 +37,21 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId }) => {
 
     const completedSubcourses = subcourses?.reduce((sum, subcourse) => (subcourse.completed ? sum + 1 : sum), 0) || 0;
 
+    // Calculate and return the overall progress without considering quizzes
     const overallProgress = Math.floor((completedSubcourses / totalSubcourses) * 100);
 
     return overallProgress;
   };
 
   useEffect(() => {
-    const filtered = subcourses?.filter((subcourse) => subcourse.name.toLowerCase().includes(searchQuery)) || [];
-    setFilteredSubcourses(filtered);
-  }, [searchQuery, subcourses]);
+    if (showCompleted) {
+      const completed = subcourses?.filter((subcourse) => subcourse.completed) || [];
+      setFilteredSubcourses(completed);
+    } else {
+      const filtered = subcourses?.filter((subcourse) => subcourse.name.toLowerCase().includes(searchQuery)) || [];
+      setFilteredSubcourses(filtered);
+    }
+  }, [showCompleted, searchQuery, subcourses]);
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
@@ -47,6 +62,7 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId }) => {
     navigate('/dashboard', {
       state: {
         completedSubcourses: subcourses?.filter(subcourse => subcourse.completed) || [],
+        completedQuizzes: questionsData?.filter(quiz => quiz.completed) || [],
         courseId: courseId,
       },
     });
@@ -56,21 +72,31 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId }) => {
     dispatch(markSubcourseComplete(courseId, subcourseId));
   };
 
-  const handleFilterClick = () => {
+
+  const handleCheckboxChange = () => {
     setShowCompleted(!showCompleted);
-    if (showCompleted) {
-      const completed = subcourses?.filter((subcourse) => subcourse.completed) || [];
-      setFilteredSubcourses(completed);
-    } else {
-      setFilteredSubcourses(subcourses || []);
-    }
+  };
+  const handleShowQuizzesClick = () => {
+    setShowQuizzes(!showQuizzes);
   };
 
   const allCoursesCompleted = subcourses?.every((subcourse) => subcourse.completed);
+  const allQuizzesCompleted = questionsData?.every((quiz) => quiz.completed);
 
-  const handleNavigate = ()=>{
-    navigate('/quiz')
-  }
+  const handleOptionClick = (quizId: number, selectedOption: string) => {
+    const currentQuiz = questionsData.find((quiz) => quiz.id === quizId);
+
+    if (currentQuiz) {
+      const isCorrectOption = selectedOption === currentQuiz.correctAnswer;
+
+      // Dispatch the appropriate action based on whether the option is correct
+      if (isCorrectOption) {
+        dispatch(markQuizComplete(courseId, quizId));
+      } else {
+        dispatch(unmarkQuizComplete(courseId, quizId));
+      }
+    }
+  };
 
   return (
     <section className="dashboard">
@@ -82,22 +108,74 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId }) => {
           </button>
         </div>
 
-        <input
-          type="text"
-          className="input-box search"
-          placeholder="Search"
-          value={searchQuery}
-          onChange={handleSearchChange}
-        />
-        <button type="button" className="filter" onClick={handleFilterClick}>
-          {showCompleted ? 'Incompleted Courses' : 'Completed Courses'}
-        </button>
-
-        {showCompleted && (
+        {showQuizzes ? (
           <div>
-            <h3 className='completed-tag'>Completed Courses</h3>
+            <h3 className="completed-tag">Quizzes</h3>
+            {allQuizzesCompleted ? (
+              <p>You have successfully completed your quizes!</p>
+            ) : (
+              <div className="dashboard-card">
+                {questionsData?.map((quiz) => (
+                  <div className="card" key={quiz.id}>
+                    <footer className='footer'>
+                      <h2>{quiz.question}</h2>
+                      <div className="quiz-footer">
+                        {quiz.options.map((option, index) => (
+                          <label className="label" key={index}>
+                            <input
+                              type="checkbox" // Change to checkbox to allow selecting multiple options
+                              onChange={() => handleOptionClick(quiz.id, option)}
+                              checked={quiz.completed && option === quiz.correctAnswer}
+                            />
+                            {option}
+                          </label>
+                        ))}
+                        <p>
+                          {quiz.completed
+                            ? quiz.completed && quiz.correctAnswer
+                              ? 'Correct Answer!'
+                              : 'Wrong Answer!'
+                            : ''}
+                        </p>
+                      </div>
+                    </footer>
+                  </div>
+                ))}
+              </div>
+
+            )}
+          </div>
+        ) : (
+          <div>
+            <input
+              type="text"
+              className="input-box search"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+            <div className="form-check">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                checked={showCompleted}
+                onChange={handleCheckboxChange}
+                id="completedCheckbox"
+              />
+              <label className="form-check-label" htmlFor="completedCheckbox">
+                Completed Courses
+              </label>
+            </div>
+
+
+            {calculateTotalProgress() === 100 && (
+              <button type="button" onClick={handleShowQuizzesClick} className='logout quiz'>
+                Show Quizzes
+              </button>
+            )}
+
             {filteredSubcourses.length === 0 ? (
-              <p>No completed courses available</p>
+              <p>No courses available</p>
             ) : (
               <div className="dashboard-card">
                 {filteredSubcourses.map((subcourse) => (
@@ -125,43 +203,6 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId }) => {
           </div>
         )}
 
-        {!showCompleted && (
-          <div>
-            <h3 className='completed-tag'>Incompleted Courses</h3>
-            {allCoursesCompleted ? (
-              <div>
-                <p>Congratulations You have completed all the courses!</p>
-                <p>Provide your feedback:</p>
-                <button className='quiz-app' onClick={handleNavigate}>
-                  Take Quiz
-                </button>
-              </div>
-            ) : (
-              <div className="dashboard-card">
-                {filteredSubcourses.map((subcourse) => (
-                  <div className="card" key={subcourse.id}>
-                    <footer>
-                      <h2>{subcourse.name}</h2>
-                      <p>{subcourse.desc}</p>
-                      <div className="bottom-footer">
-                        <label className="label">
-                          <input
-                            type="radio"
-                            className="radio"
-                            onChange={() => handleRadioChange(subcourse.id)}
-                            checked={subcourse.completed}
-                          />
-                          {subcourse.name}
-                        </label>
-                        <p>{subcourse.completed ? '100%' : '0%'} completed</p>
-                      </div>
-                    </footer>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </section>
   );

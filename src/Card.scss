@@ -13,7 +13,7 @@ body {
   width: fit-content;
   border-radius: $border-radius;
   width: 100%;
-  padding: 20px 30px;
+  padding: 20px;
   height: 100%;
   text-align: center;
   cursor: pointer;
@@ -22,6 +22,12 @@ body {
   &:hover {
     box-shadow: 0 10px 20px 1px gray;
     transform: scale(1.03);
+  }
+  .footer{
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   footer {
@@ -43,6 +49,14 @@ body {
       display: flex;
       justify-content: space-between;
       align-items: center;
+    }
+
+    .quiz-footer {
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 5px;
     }
 
     .radio {

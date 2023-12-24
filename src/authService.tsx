@@ -8,7 +8,6 @@ interface User {
 
 let users: User[] = [];
 
-// retrieve users from localStorage if available
 const storedUsers = localStorage.getItem('users');
 if (storedUsers) {
   users = JSON.parse(storedUsers);
@@ -21,12 +20,10 @@ export const authService = {
       username,
       email,
       password,
-      completedCourses: {}, // Initialize completedCourses
+      completedCourses: {},
     };
 
     users.push(newUser);
-
-    // updating users in localStorage
     localStorage.setItem('users', JSON.stringify(users));
 
     return Promise.resolve(newUser);
@@ -43,7 +40,7 @@ export const authService = {
 
     if (!existingUser) {
       console.error('User not found');
-      throw new Error('Invalid credentials'); // More specific error message
+      throw new Error('Invalid credentials');
     }
 
     console.log('Login successful. User:', existingUser);
@@ -51,20 +48,16 @@ export const authService = {
     return Promise.resolve(existingUser);
   },
 
-  // New function to mark a subcourse as completed
   completeSubcourse: async (user: User, courseId: string, subcourseId: string): Promise<User> => {
-    // Update user's completedCourses
     user.completedCourses[courseId] = true;
     user.completedCourses[subcourseId] = true;
-  
-    // Update the specific user in localStorage
+
     const updatedUsers = users.map((u) => (u.id === user.id ? user : u));
     localStorage.setItem('users', JSON.stringify(updatedUsers));
-  
+
     return Promise.resolve(user);
   },
 
-  // New function to check if the entire course is completed
   isCourseCompleted: (user: User, courseId: string): boolean => {
     return user.completedCourses[courseId] || false;
   },
