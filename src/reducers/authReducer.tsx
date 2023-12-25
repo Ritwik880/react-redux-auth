@@ -5,29 +5,35 @@ interface User {
   username: string;
   completedCourses: string[];
 }
-
 interface AuthState {
   user: User | null;
-  courses: {
+  courses: Course[];
+}
+
+interface Course {
+  id: string;
+  name: string;
+  para: string;
+  subSubjects: {
     id: string;
     name: string;
-    para: string;
-    subSubjects: {
-      id: string;
-      name: string;
-      desc: string;
-      completed: boolean;
-    }[];
-    completedCourses: string[];
-    questionsData: Array<{
-      id: number;
-      question: string;
-      options: string[];
-      correctAnswer: string;
-      completed: boolean;
-    }>;
+    desc: string;
+    completed: boolean;
   }[];
+  completedCourses: string[];
+  questionsData: Array<{
+    id: number;
+    question: string;
+    options: string[];
+    correctAnswer: string;
+    completed: boolean;
+  }>;
 }
+
+interface RootState {
+  auth: AuthState;
+}
+
 
 const initialState: AuthState = {
   user: null,

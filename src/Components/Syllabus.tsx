@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { markSubcourseComplete, markQuizComplete, unmarkQuizComplete } from '../actions/authActions';
+import { markSubcourseComplete, markQuizComplete } from '../actions/authActions';
 
 interface SubcourseProps {
   courseId: string;
@@ -23,7 +23,17 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
   const [filteredSubcourses, setFilteredSubcourses] = useState<Array<{ id: string; name: string; desc: string; completed: boolean }>>(
     subcourses || []
   );
-  const [allQuizzesCompleted, setAllQuizzesCompleted] = useState<boolean>(false); // Add this line
+  const [allQuizzesCompleted, setAllQuizzesCompleted] = useState<boolean>(false);
+  const [answeredQuizzes, setAnsweredQuizzes] = useState<Array<{ question: string; answer: string }>>([]);
+  const [currentQuizIndex, setCurrentQuizIndex] = useState<number>(0); // Track the current quiz index
+  const [showSubmitButton, setShowSubmitButton] = useState<boolean>(false);
+  const [totalMarks, setTotalMarks] = useState<number>(0);
+  const [isLastQuestion, setIsLastQuestion] = useState<boolean>(false);
+  const [quizSubmitted, setQuizSubmitted] = useState<boolean>(false);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+
+
+
 
   const navigate = useNavigate();
 
@@ -60,10 +70,12 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
     navigate('/dashboard', {
       state: {
         completedSubcourses: subcourses?.filter(subcourse => subcourse.completed) || [],
-        completedQuizzes: questionsData?.filter(quiz => quiz.completed) || [],
+        completedQuizzes: answeredQuizzes,
         courseId: courseId,
       },
     });
+    setIsLastQuestion(false);
+
   };
 
   const handleRadioChange = (subcourseId: string) => {
@@ -75,28 +87,65 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
   };
 
   const handleShowQuizzesClick = () => {
-    setShowQuizzes(!showQuizzes);
+    setShowQuizzes(true);
+    setShowSubmitButton(true);
   };
 
   const handleOptionClick = async (quizId: number, selectedOption: string) => {
+    if (quizSubmitted) {
+      return;
+    }
+
     const currentQuiz = questionsData.find((quiz) => quiz.id === quizId);
 
+
     if (currentQuiz) {
-      const isCorrectOption = selectedOption === currentQuiz.correctAnswer;
-      if (isCorrectOption) {
-        dispatch(markQuizComplete(courseId, quizId));
-      } else {
-        dispatch(unmarkQuizComplete(courseId, quizId));
+      setSelectedOptions((prevOptions) => {
+        const updatedOptions = prevOptions.includes(selectedOption)
+          ? prevOptions.filter((option) => option !== selectedOption)
+          : [...prevOptions, selectedOption];
+        return updatedOptions;
+      });
+
+      setAnsweredQuizzes((prevQuizzes) => {
+        const updatedQuizzes = [...prevQuizzes, { question: currentQuiz.question, answer: selectedOption }];
+        return updatedQuizzes;
+      });
+      dispatch(markQuizComplete(courseId, quizId));
+
+      const isLastQuestion = currentQuizIndex === questionsData.length - 1;
+      setIsLastQuestion(isLastQuestion);
+
+      if (isLastQuestion) {
+        setShowSubmitButton(true);
       }
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const updatedQuizzes = questionsData.map((quiz) => (quiz.id === quizId ? { ...quiz, completed: true } : quiz));
-      const allQuizzesCompleted = updatedQuizzes.every((quiz) => quiz.completed);
+      const allQuizzesCompleted = questionsData.every((quiz) => quiz.completed);
       setAllQuizzesCompleted(allQuizzesCompleted);
+      if (!allQuizzesCompleted && !isLastQuestion) {
+        setCurrentQuizIndex((prevIndex) => prevIndex + 1);
+      }
     }
   };
 
 
+  const handleSubmitClick = () => {
+    setQuizSubmitted(true);
+    const totalMarks = answeredQuizzes.reduce((total, answeredQuiz) => {
+      const currentQuiz = questionsData.find((quiz) => quiz.question === answeredQuiz.question);
+      if (currentQuiz && currentQuiz.correctAnswer === answeredQuiz.answer) {
+        return total + 1;
+      }
+      return total;
+    }, 0);
+
+    setTotalMarks(totalMarks);
+    setShowQuizzes(false);
+  };
+
+
   return (
+
+
     <section className="dashboard">
       <div className="container">
         <div className="header">
@@ -106,41 +155,41 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
           </button>
         </div>
 
-        {showQuizzes ? (
+        {totalMarks > 0 && (
+          <div className="total-marks">
+            <h4>Total Marks Obtained In Quiz: {totalMarks}</h4>
+          </div>
+        )}
+
+        {showQuizzes && currentQuizIndex < questionsData.length ? (
           <div>
             <h3 className="completed-tag">Quizzes</h3>
-            {allQuizzesCompleted ? (
-              <p>You have successfully completed your quizzes!</p>
-            ) : (
-              <div className="dashboard-card">
-                {questionsData?.map((quiz) => (
-                  <div className="card" key={quiz.id}>
-                    <footer className='footer'>
-                      <h2>{quiz.question}</h2>
-                      <div className="quiz-footer">
-                        {quiz.options.map((option, index) => (
-                          <label className="label" key={index}>
-                            <input
-                              type="checkbox"
-                              onChange={() => handleOptionClick(quiz.id, option)}
-                              checked={quiz.completed && option === quiz.correctAnswer}
-                            />
-                            {option}
-                          </label>
-                        ))}
-                        <p>
-                          {quiz.completed
-                            ? quiz.completed && quiz.correctAnswer
-                              ? 'Correct Answer!'
-                              : 'Wrong Answer!'
-                            : ''}
-                        </p>
-                      </div>
-                    </footer>
+            <div className="dashboard-card">
+              <div className="card" key={questionsData[currentQuizIndex].id}>
+                <footer className='footer'>
+                  <h2>{questionsData[currentQuizIndex].question}</h2>
+                  <div className="quiz-footer">
+                    {questionsData[currentQuizIndex].options.map((option, index) => (
+                      <label className="label" key={index}>
+                        <input
+                          type="checkbox"
+                          onChange={() => handleOptionClick(questionsData[currentQuizIndex].id, option)}
+                          checked={selectedOptions.includes(option)}
+                        />
+                        {option}
+                      </label>
+                    ))}
+
+
                   </div>
-                ))}
+                  {showSubmitButton && isLastQuestion && (
+                    <button type="button" onClick={handleSubmitClick} className='logout quiz'>
+                      Submit
+                    </button>
+                  )}
+                </footer>
               </div>
-            )}
+            </div>
           </div>
         ) : (
           <div>
