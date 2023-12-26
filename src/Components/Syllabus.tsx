@@ -143,7 +143,7 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
   };
 
   const truncateDescription = (desc: string): string => {
-    const maxLength = 100; // Set your desired maximum length
+    const maxLength = 100;
     return desc.length > maxLength ? `${desc.slice(0, maxLength)}...` : desc;
   };
 
