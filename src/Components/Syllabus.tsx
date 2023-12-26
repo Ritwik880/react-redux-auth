@@ -33,6 +33,8 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [showReviewSection, setShowReviewSection] = useState<boolean>(false);
   const [showReviewButton, setShowReviewButton] = useState<boolean>(false);
+  const [expandedSubcourses, setExpandedSubcourses] = useState<string[]>([]);
+
 
 
   const navigate = useNavigate();
@@ -139,6 +141,20 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
     setShowQuizzes(false);
     setShowReviewSection(true);
   };
+
+  const truncateDescription = (desc: string): string => {
+    const maxLength = 100; // Set your desired maximum length
+    return desc.length > maxLength ? `${desc.slice(0, maxLength)}...` : desc;
+  };
+
+  const toggleReadMore = (subcourseId: string): void => {
+    setExpandedSubcourses((prevExpanded) =>
+      prevExpanded.includes(subcourseId)
+        ? prevExpanded.filter((id) => id !== subcourseId)
+        : [...prevExpanded, subcourseId]
+    );
+  };
+
 
   const renderReviewSection = () => (
     <>
@@ -252,7 +268,10 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
                   <div className="card" key={subcourse.id}>
                     <footer>
                       <h2>{subcourse.name}</h2>
-                      <p>{subcourse.desc}</p>
+                      <p>{expandedSubcourses.includes(subcourse.id) ? subcourse.desc : truncateDescription(subcourse.desc)}</p>
+                      <a href="#" onClick={() => toggleReadMore(subcourse.id)}>
+                        {expandedSubcourses.includes(subcourse.id) ? 'Read Less' : 'Read More'}
+                      </a>
                       <div className="bottom-footer">
                         <label className="label">
                           <input
@@ -270,6 +289,7 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
                 ))}
               </div>
             )}
+
           </div>
         )}
       </div>
