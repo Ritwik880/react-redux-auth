@@ -164,7 +164,7 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
           <div key={index}>
             <div className="card">
               <footer className='footer'>
-                <h2>{quiz.question}</h2>
+                <h4>{quiz.question}</h4>
                 <p>Your Answer: {quiz.answer}</p>
                 {questionsData[index] && (
                   <p>Correct Answer: {questionsData[index].correctAnswer}</p>
@@ -208,6 +208,7 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
                           type="checkbox"
                           onChange={() => handleOptionClick(questionsData[currentQuizIndex].id, option)}
                           checked={selectedOptions.includes(option)}
+                          className='radio'
                         />
                         {option}
                       </label>
