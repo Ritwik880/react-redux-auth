@@ -24,15 +24,15 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
     subcourses || []
   );
   const [allQuizzesCompleted, setAllQuizzesCompleted] = useState<boolean>(false);
-  const [answeredQuizzes, setAnsweredQuizzes] = useState<Array<{ question: string; answer: string }>>([]);
+  const [answeredQuizzes, setAnsweredQuizzes] = useState<Array<{ question: string; answer: string; correct: boolean }>>([]);
   const [currentQuizIndex, setCurrentQuizIndex] = useState<number>(0); // Track the current quiz index
   const [showSubmitButton, setShowSubmitButton] = useState<boolean>(false);
   const [totalMarks, setTotalMarks] = useState<number>(0);
   const [isLastQuestion, setIsLastQuestion] = useState<boolean>(false);
   const [quizSubmitted, setQuizSubmitted] = useState<boolean>(false);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-
-
+  const [showReviewSection, setShowReviewSection] = useState<boolean>(false);
+  const [showReviewButton, setShowReviewButton] = useState<boolean>(false);
 
 
   const navigate = useNavigate();
@@ -75,7 +75,6 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
       },
     });
     setIsLastQuestion(false);
-
   };
 
   const handleRadioChange = (subcourseId: string) => {
@@ -98,7 +97,6 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
 
     const currentQuiz = questionsData.find((quiz) => quiz.id === quizId);
 
-
     if (currentQuiz) {
       setSelectedOptions((prevOptions) => {
         const updatedOptions = prevOptions.includes(selectedOption)
@@ -107,8 +105,10 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
         return updatedOptions;
       });
 
+      const isAnswerCorrect = currentQuiz.correctAnswer === selectedOption;
+
       setAnsweredQuizzes((prevQuizzes) => {
-        const updatedQuizzes = [...prevQuizzes, { question: currentQuiz.question, answer: selectedOption }];
+        const updatedQuizzes = [...prevQuizzes, { question: currentQuiz.question, answer: selectedOption, correct: isAnswerCorrect }];
         return updatedQuizzes;
       });
       dispatch(markQuizComplete(courseId, quizId));
@@ -127,25 +127,42 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
     }
   };
 
-
   const handleSubmitClick = () => {
     setQuizSubmitted(true);
-    const totalMarks = answeredQuizzes.reduce((total, answeredQuiz) => {
-      const currentQuiz = questionsData.find((quiz) => quiz.question === answeredQuiz.question);
-      if (currentQuiz && currentQuiz.correctAnswer === answeredQuiz.answer) {
-        return total + 1;
-      }
-      return total;
-    }, 0);
-
+    const totalMarks = answeredQuizzes.reduce((total, answeredQuiz) => (answeredQuiz.correct ? total + 1 : total), 0);
     setTotalMarks(totalMarks);
     setShowQuizzes(false);
+    setShowReviewButton(true);
   };
 
+  const handleShowReviewClick = () => {
+    setShowQuizzes(false);
+    setShowReviewSection(true);
+  };
+
+  const renderReviewSection = () => (
+    <>
+      <h3 className="completed-tag">Review Quizzes</h3>
+      <div className="dashboard-card">
+        {answeredQuizzes.map((quiz, index) => (
+          <div key={index}>
+            <div className="card">
+              <footer className='footer'>
+                <h2>{quiz.question}</h2>
+                <p>Your Answer: {quiz.answer}</p>
+                {questionsData[index] && (
+                  <p>Correct Answer: {questionsData[index].correctAnswer}</p>
+                )}
+                <p>{quiz.correct ? 'Correct' : 'Incorrect'}</p>
+              </footer>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
+  );
 
   return (
-
-
     <section className="dashboard">
       <div className="container">
         <div className="header">
@@ -179,8 +196,6 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
                         {option}
                       </label>
                     ))}
-
-
                   </div>
                   {showSubmitButton && isLastQuestion && (
                     <button type="button" onClick={handleSubmitClick} className='logout quiz'>
@@ -191,6 +206,8 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
               </div>
             </div>
           </div>
+        ) : showReviewSection ? (
+          renderReviewSection()
         ) : (
           <div>
             <input
@@ -214,10 +231,18 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
             </div>
 
             {calculateTotalProgress() === 100 && (
-              <button type="button" onClick={handleShowQuizzesClick} className='logout quiz'>
-                Show Quizzes
-              </button>
+              <div>
+                <button type="button" onClick={handleShowQuizzesClick} className='logout quiz'>
+                  Show Quizzes
+                </button>
+              </div>
             )}
+            {
+              showReviewButton && <button type="button" onClick={handleShowReviewClick} className='review-button quiz'>
+                Review Quizzes
+              </button>
+            }
+
 
             {filteredSubcourses.length === 0 ? (
               <p>No courses available</p>
