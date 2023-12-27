@@ -17,10 +17,10 @@ const Dashboard: React.FC = () => {
       navigate('/');
     };
 
-    let timeoutId: NodeJS.Timeout;
+    let timeoutId: NodeJS.Timeout | undefined;
 
     const resetSessionTimeout = () => {
-      clearTimeout(timeoutId);
+      clearTimeout(timeoutId!);
       timeoutId = setTimeout(() => {
         setSessionExpired(true);
         handleSessionExpiration();
@@ -42,7 +42,7 @@ const Dashboard: React.FC = () => {
       handleUserActivityEvents.forEach((event) => {
         window.removeEventListener(event, handleUserActivity);
       });
-      clearTimeout(timeoutId);
+      clearTimeout(timeoutId!);
     };
   }, [dispatch, navigate]);
 

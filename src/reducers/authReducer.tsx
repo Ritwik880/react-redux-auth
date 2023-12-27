@@ -5,7 +5,7 @@ interface User {
   username: string;
   completedCourses: string[];
 }
-interface AuthState {
+export interface AuthState {
   user: User | null;
   courses: Course[];
 }
