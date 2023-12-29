@@ -1,4 +1,3 @@
-// Courses.js
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Syllabus from './Syllabus';
@@ -36,7 +35,11 @@ const Courses: React.FC = () => {
   useEffect(() => {
     const findCourseData = () => {
       const selectedCourse = courses.find((course: Course) => course.id === courseId);
-      setCourseData(selectedCourse);
+      if (selectedCourse !== undefined) {
+        setCourseData(selectedCourse);
+      } else {
+        setCourseData(null);
+      }
     };
 
     if (user) {
@@ -47,7 +50,8 @@ const Courses: React.FC = () => {
   return (
     <div>
       {courseData ? (
-        <Syllabus courseId={courseId} subcourses={courseData.subSubjects} questionsData={courseData.questionsData} />
+        <Syllabus courseId={courseId || ''} subcourses={courseData.subSubjects} questionsData={courseData.questionsData} />
+
       ) : (
         <div className='loading'>Loading course data...</div>
       )}

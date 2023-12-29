@@ -25,7 +25,7 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
   );
   const [allQuizzesCompleted, setAllQuizzesCompleted] = useState<boolean>(false);
   const [answeredQuizzes, setAnsweredQuizzes] = useState<Array<{ question: string; answer: string; correct: boolean }>>([]);
-  const [currentQuizIndex, setCurrentQuizIndex] = useState<number>(0); // Track the current quiz index
+  const [currentQuizIndex, setCurrentQuizIndex] = useState<number>(0);
   const [showSubmitButton, setShowSubmitButton] = useState<boolean>(false);
   const [totalMarks, setTotalMarks] = useState<number>(0);
   const [isLastQuestion, setIsLastQuestion] = useState<boolean>(false);
@@ -34,8 +34,6 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
   const [showReviewSection, setShowReviewSection] = useState<boolean>(false);
   const [showReviewButton, setShowReviewButton] = useState<boolean>(false);
   const [expandedSubcourses, setExpandedSubcourses] = useState<string[]>([]);
-
-
 
   const navigate = useNavigate();
 
@@ -61,7 +59,17 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
       const filtered = subcourses?.filter((subcourse) => subcourse.name.toLowerCase().includes(searchQuery)) || [];
       setFilteredSubcourses(filtered);
     }
-  }, [showCompleted, searchQuery, subcourses]);
+    return ()=>{
+      setAnsweredQuizzes([]);
+      setCurrentQuizIndex(0);
+      setShowSubmitButton(false);
+      setQuizSubmitted(false);
+      setSelectedOptions([]);
+      setShowReviewSection(false);
+      setShowReviewButton(false);
+      setExpandedSubcourses([]);
+    }
+  }, [showCompleted, searchQuery, subcourses, courseId]);
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
