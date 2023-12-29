@@ -13,6 +13,6 @@ export const REVIEW_QUIZ = 'Review Quizzes';
 export const NO_COURSES = 'No courses available';
 export const SESSION_EXPIRED = 'Your session has expired. Please log in again.';
 export const QUIZ = 'Quizzes';
-export const SUBMIT ='Submir';
+export const SUBMIT ='Submit';
 export const YOUR_ANSWER = 'Your Answer:';
 export const CORRECT_ANSWER = 'Correct Answer:';
