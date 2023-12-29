@@ -6,7 +6,11 @@ import Quiz from './Quiz';
 import ReviewSection from './ReviewSection';
 
 const SHOW_QUIZZES_BUTTON_TEXT = 'Show Quizzes';
-
+const GO_BACK = 'Go Back';
+const TOTAL_MARKS = 'Total Marks Obtained In Quiz:';
+const COMPLETED_COURSES = 'Completed Courses';
+const REVIEW_QUIZ = 'Review Quizzes';
+const NO_COURSES = 'No courses available';
 interface SubcourseProps {
   courseId: string;
   subcourses: Array<{ id: string; name: string; desc: string; completed: boolean }>;
@@ -175,13 +179,13 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
         <div className="header">
           <h3 className="progress">Your Progress: {calculateTotalProgress()}% completed</h3>
           <button type="button" onClick={handleGoBack} className="logout">
-            Go Back
+           {GO_BACK}
           </button>
         </div>
 
         {totalMarks > 0 && (
           <div className="total-marks">
-            <h4>Total Marks Obtained In Quiz: {totalMarks}</h4>
+            <h4>{TOTAL_MARKS} {totalMarks}</h4>
           </div>
         )}
 
@@ -215,7 +219,7 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
                 id="completedCheckbox"
               />
               <label className="form-check-label" htmlFor="completedCheckbox">
-                Completed Courses
+                {COMPLETED_COURSES}
               </label>
             </div>
 
@@ -228,12 +232,12 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
             )}
             {showReviewButton && (
               <button type="button" onClick={handleShowReviewClick} className="review-button quiz">
-                Review Quizzes
+                {REVIEW_QUIZ}
               </button>
             )}
 
             {filteredSubcourses.length === 0 ? (
-              <p>No courses available</p>
+              <p>{NO_COURSES}</p>
             ) : (
               <div className="dashboard-card">
                 {filteredSubcourses.map((subcourse) => (
