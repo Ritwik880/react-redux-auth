@@ -1,4 +1,5 @@
 import React from 'react';
+import { CORRECT_ANSWER, REVIEW_QUIZ, YOUR_ANSWER } from '../constants/constant';
 
 interface ReviewSectionProps {
   answeredQuizzes: Array<{ question: string; answer: string; correct: boolean }>;
@@ -13,16 +14,16 @@ interface ReviewSectionProps {
 
 const ReviewSection: React.FC<ReviewSectionProps> = ({ answeredQuizzes, questionsData }) => (
   <>
-    <h3 className="completed-tag">Review Quizzes</h3>
+    <h3 className="completed-tag">{REVIEW_QUIZ}</h3>
     <div className="dashboard-card">
       {answeredQuizzes.map((quiz, index) => (
         <div key={index}>
           <div className="card">
             <footer className='footer'>
               <h4>{quiz.question}</h4>
-              <p>Your Answer: {quiz.answer}</p>
+              <p>{YOUR_ANSWER} {quiz.answer}</p>
               {questionsData[index] && (
-                <p>Correct Answer: {questionsData[index].correctAnswer}</p>
+                <p>{CORRECT_ANSWER} {questionsData[index].correctAnswer}</p>
               )}
               <p>{quiz.correct ? 'Correct' : 'Incorrect'}</p>
             </footer>

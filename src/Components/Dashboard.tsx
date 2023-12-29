@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../reducers';
 import { useNavigate } from 'react-router-dom';
 import { logoutSuccess } from '../actions/authActions';
+import { INPROGRESS, COMPLETED, COURSES, WELCOME, LOGOUT, SESSION_EXPIRED } from '../constants/constant';
 
 const Dashboard: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -59,16 +60,16 @@ const Dashboard: React.FC = () => {
     <section className="dashboard">
       <div className="container">
         {sessionExpired ? (
-          <h2>Your session has expired. Please log in again.</h2>
+          <h2>{SESSION_EXPIRED}</h2>
         ) : (
           <>
             <div className="header">
-              <h2>Welcome to your Dashboard, {user?.username}!</h2>
+              <h2>{WELCOME} {user?.username}!</h2>
               <button type="button" onClick={handleLogout} className="logout">
-                Logout
+                {LOGOUT}
               </button>
             </div>
-            <h2 className='your-courses'>Your Courses</h2>
+            <h2 className='your-courses'>{COURSES}</h2>
             <div className="dashboard-card">
               {courses &&
                 courses.map((item) => (
@@ -81,9 +82,9 @@ const Dashboard: React.FC = () => {
                       <h2>{item.name}</h2>
                       <p>{item.para}</p>
                       {item.subSubjects.every(sub => sub.completed) ? (
-                        <div className="completed-badge">Course Completion: Completed</div>
+                        <div className="completed-badge">{COMPLETED}</div>
                       ) : (
-                        <div className="completed-badge">Course Completion: In Progress</div>
+                        <div className="completed-badge">{INPROGRESS}</div>
                       )}
                     </footer>
                   </div>

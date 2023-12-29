@@ -6,7 +6,7 @@ import { registerSuccess } from '../actions/authActions';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { LOGIN, SIGN_UP } from '../constants/constant';
 
 const Register: React.FC = () => {
   const dispatch = useDispatch();
@@ -46,15 +46,15 @@ const Register: React.FC = () => {
     <section className='landing-section'>
       <ToastContainer position="top-center" autoClose={2000} />
       <div className='landing-div'>
-        <h2 className='landing-heading'>Sign Up</h2>
+        <h2 className='landing-heading'>{SIGN_UP}</h2>
         <input className='input-box' type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         <input className='input-box' type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
         <input className='input-box' type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         <div className='button-div'>
           <button type="button" onClick={handleRegister} className='signup-button'>
-            Sign Up
+            {SIGN_UP}
           </button>
-          <a onClick={() => navigate('/')} className='login-text'>Login</a>
+          <a onClick={() => navigate('/')} className='login-text'>{LOGIN}</a>
         </div>
       </div>
     </section>

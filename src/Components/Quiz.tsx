@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { QUIZ, SUBMIT } from '../constants/constant';
 
 interface QuizSectionProps {
   questionsData: Array<{
@@ -29,7 +30,7 @@ const Quiz: React.FC<QuizSectionProps> = ({
 
   return (
     <div>
-      <h3 className="completed-tag">Quizzes</h3>
+      <h3 className="completed-tag">{QUIZ}</h3>
       <div className="dashboard-card">
         <div className="card" key={currentQuiz.id}>
           <footer className='footer'>
@@ -49,7 +50,7 @@ const Quiz: React.FC<QuizSectionProps> = ({
             </div>
             {showSubmitButton && isLastQuestion && (
               <button type="button" onClick={handleSubmitClick} className='logout quiz'>
-                Submit
+                {SUBMIT}
               </button>
             )}
           </footer>

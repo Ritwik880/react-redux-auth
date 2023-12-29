@@ -4,13 +4,7 @@ import { useDispatch } from 'react-redux';
 import { markSubcourseComplete, markQuizComplete } from '../actions/authActions';
 import Quiz from './Quiz';
 import ReviewSection from './ReviewSection';
-
-const SHOW_QUIZZES_BUTTON_TEXT = 'Show Quizzes';
-const GO_BACK = 'Go Back';
-const TOTAL_MARKS = 'Total Marks Obtained In Quiz:';
-const COMPLETED_COURSES = 'Completed Courses';
-const REVIEW_QUIZ = 'Review Quizzes';
-const NO_COURSES = 'No courses available';
+import { SHOW_QUIZZES_BUTTON_TEXT, GO_BACK, TOTAL_MARKS, COMPLETED_COURSES, REVIEW_QUIZ, NO_COURSES } from '../constants/constant';
 interface SubcourseProps {
   courseId: string;
   subcourses: Array<{ id: string; name: string; desc: string; completed: boolean }>;
