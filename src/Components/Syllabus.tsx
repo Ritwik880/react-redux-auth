@@ -5,6 +5,8 @@ import { markSubcourseComplete, markQuizComplete } from '../actions/authActions'
 import Quiz from './Quiz';
 import ReviewSection from './ReviewSection';
 
+const SHOW_QUIZZES_BUTTON_TEXT = 'Show Quizzes';
+
 interface SubcourseProps {
   courseId: string;
   subcourses: Array<{ id: string; name: string; desc: string; completed: boolean }>;
@@ -39,20 +41,6 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
 
   const navigate = useNavigate();
 
-  const calculateTotalProgress = () => {
-    const totalSubcourses = subcourses?.length || 0;
-
-    if (totalSubcourses === 0) {
-      return 0;
-    }
-
-    const completedSubcourses = subcourses?.reduce((sum, subcourse) => (subcourse.completed ? sum + 1 : sum), 0) || 0;
-
-    const overallProgress = Math.floor((completedSubcourses / totalSubcourses) * 100);
-
-    return overallProgress;
-  };
-
   useEffect(() => {
     if (showCompleted) {
       const completed = subcourses?.filter((subcourse) => subcourse.completed) || [];
@@ -70,8 +58,22 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
       setShowReviewSection(false);
       setShowReviewButton(false);
       setExpandedSubcourses([]);
-    }
+    };
   }, [showCompleted, searchQuery, subcourses, courseId]);
+
+  const calculateTotalProgress = () => {
+    const totalSubcourses = subcourses?.length || 0;
+
+    if (totalSubcourses === 0) {
+      return 0;
+    }
+
+    const completedSubcourses = subcourses?.reduce((sum, subcourse) => (subcourse.completed ? sum + 1 : sum), 0) || 0;
+
+    const overallProgress = Math.floor((completedSubcourses / totalSubcourses) * 100);
+
+    return overallProgress;
+  };
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
@@ -81,7 +83,7 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
   const handleGoBack = () => {
     navigate('/dashboard', {
       state: {
-        completedSubcourses: subcourses?.filter(subcourse => subcourse.completed) || [],
+        completedSubcourses: subcourses?.filter((subcourse) => subcourse.completed) || [],
         completedQuizzes: answeredQuizzes,
         courseId: courseId,
       },
@@ -165,9 +167,7 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
     );
   };
 
-
   const renderReviewSection = () => <ReviewSection answeredQuizzes={answeredQuizzes} questionsData={questionsData} />;
-
 
   return (
     <section className="dashboard">
@@ -221,17 +221,16 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
 
             {calculateTotalProgress() === 100 && (
               <div>
-                <button type="button" onClick={handleShowQuizzesClick} className='logout quiz'>
-                  Show Quizzes
+                <button type="button" onClick={handleShowQuizzesClick} className="logout quiz">
+                  {SHOW_QUIZZES_BUTTON_TEXT}
                 </button>
               </div>
             )}
-            {
-              showReviewButton && <button type="button" onClick={handleShowReviewClick} className='review-button quiz'>
+            {showReviewButton && (
+              <button type="button" onClick={handleShowReviewClick} className="review-button quiz">
                 Review Quizzes
               </button>
-            }
-
+            )}
 
             {filteredSubcourses.length === 0 ? (
               <p>No courses available</p>
@@ -262,7 +261,6 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
                 ))}
               </div>
             )}
-
           </div>
         )}
       </div>
