@@ -6,6 +6,7 @@ import Register from './Components/Register';
 import Login from './Components/Login';
 import Dashboard from './Components/Dashboard';
 import Courses from './Components/Courses';
+import Quiz from './Components/Quiz';
 
 const App: React.FC = () => {
 
@@ -16,6 +17,7 @@ const App: React.FC = () => {
         <Route path="/sign-up" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/courses/:courseId" element={<Courses />} />
+        <Route path="/quiz" element={<Quiz />} />
       </Routes>
     </div>
   );

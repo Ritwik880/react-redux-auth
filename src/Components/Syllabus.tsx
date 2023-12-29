@@ -2,6 +2,8 @@ import React, { useState, ChangeEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { markSubcourseComplete, markQuizComplete } from '../actions/authActions';
+import Quiz from './Quiz';
+import ReviewSection from './ReviewSection';
 
 interface SubcourseProps {
   courseId: string;
@@ -59,7 +61,7 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
       const filtered = subcourses?.filter((subcourse) => subcourse.name.toLowerCase().includes(searchQuery)) || [];
       setFilteredSubcourses(filtered);
     }
-    return ()=>{
+    return () => {
       setAnsweredQuizzes([]);
       setCurrentQuizIndex(0);
       setShowSubmitButton(false);
@@ -164,27 +166,8 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
   };
 
 
-  const renderReviewSection = () => (
-    <>
-      <h3 className="completed-tag">Review Quizzes</h3>
-      <div className="dashboard-card">
-        {answeredQuizzes.map((quiz, index) => (
-          <div key={index}>
-            <div className="card">
-              <footer className='footer'>
-                <h4>{quiz.question}</h4>
-                <p>Your Answer: {quiz.answer}</p>
-                {questionsData[index] && (
-                  <p>Correct Answer: {questionsData[index].correctAnswer}</p>
-                )}
-                <p>{quiz.correct ? 'Correct' : 'Incorrect'}</p>
-              </footer>
-            </div>
-          </div>
-        ))}
-      </div>
-    </>
-  );
+  const renderReviewSection = () => <ReviewSection answeredQuizzes={answeredQuizzes} questionsData={questionsData} />;
+
 
   return (
     <section className="dashboard">
@@ -203,34 +186,15 @@ const Syllabus: React.FC<SubcourseProps> = ({ subcourses, courseId, questionsDat
         )}
 
         {showQuizzes && currentQuizIndex < questionsData.length ? (
-          <div>
-            <h3 className="completed-tag">Quizzes</h3>
-            <div className="dashboard-card">
-              <div className="card" key={questionsData[currentQuizIndex].id}>
-                <footer className='footer'>
-                  <h2>{questionsData[currentQuizIndex].question}</h2>
-                  <div className="quiz-footer">
-                    {questionsData[currentQuizIndex].options.map((option, index) => (
-                      <label className="label" key={index}>
-                        <input
-                          type="checkbox"
-                          onChange={() => handleOptionClick(questionsData[currentQuizIndex].id, option)}
-                          checked={selectedOptions.includes(option)}
-                          className='radio'
-                        />
-                        {option}
-                      </label>
-                    ))}
-                  </div>
-                  {showSubmitButton && isLastQuestion && (
-                    <button type="button" onClick={handleSubmitClick} className='logout quiz'>
-                      Submit
-                    </button>
-                  )}
-                </footer>
-              </div>
-            </div>
-          </div>
+          <Quiz
+            questionsData={questionsData}
+            currentQuizIndex={currentQuizIndex}
+            handleOptionClick={handleOptionClick}
+            handleSubmitClick={handleSubmitClick}
+            showSubmitButton={showSubmitButton}
+            isLastQuestion={isLastQuestion}
+            selectedOptions={selectedOptions}
+          />
         ) : showReviewSection ? (
           renderReviewSection()
         ) : (
